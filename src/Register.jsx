@@ -1,110 +1,77 @@
-import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, } from "react-router-dom"
-
+import { Link } from "react-router-dom";
 
 const Register = () => {
-    const [alldata, setAlldata] = useState([]);
-    const navigate = useNavigate();
-    const [input, setInput] = useState({
-        name: '',
-        phone: '',
-        email: '',
-        password: '',
-    });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setInput({
-            ...input,
-            [name]: value
-        });
-    }
+    const navigate = useNavigate()
 
-    const submit = () => {
-        if (!input.name || !input.phone || !input.email || !input.password) {
-            toast.error('Please fill in all fields', {
-                position: "top-right",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-                style: {
-                    width: '400px',
-                },
-            });
-            return;
-        }
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [phone, setPhone] = useState("")
+    const [alldata, setAlldata] = useState([])
+
+    const onsubmit = () => {
         let obj = {
-            id: Math.floor(Math.random() * 10000),
-            name: input.name,
-            phone: input.phone,
-            password: input.password,
-            email: input.email
+            id: Math.floor(Math.random() * 1000),
+            name: name,
+            email: email,
+            password: password,
+            phone: phone
         }
         let data = [...alldata, obj];
+        localStorage.setItem("register", JSON.stringify(data));
         setAlldata(data);
-        localStorage.setItem('alldata', JSON.stringify(data));
-        toast.success('Successfully Add', {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            style: {
-                width: '400px',
-            },
-
-
-        });
-        navigate('/login');
-        setInput({
-            name: '',
-            phone: '',
-            password: '',
-            email: '',
-        });
+        setEmail("");
+        setPassword("");
+        setPhone("");
+        setName("");
+        toast.success("Successfully registered");
+        navigate("/login")
     }
-
     useEffect(() => {
-        let all = JSON.parse(localStorage.getItem('alldata'));
-        if (all === null) {
-            setAlldata([]);
+        let data = JSON.parse(localStorage.getItem('register'));
+        if (data === null) {
+            setAlldata([])
         } else {
-            setAlldata(all);
+            setAlldata(data)
         }
-    }, []);
+        let admin = JSON.parse(localStorage.getItem('login'));
+        if (admin) {
+            navigate('/home');
+        }
+    }, [])
 
     return (
-        <>
+        <center>
             <div className="testbox">
                 <h1>Registration</h1>
                 <form>
                     <label id="icon" htmlFor="email"><i className="icon-envelope" /></label>
-                    <input type="text" name="email" onChange={handleChange} value={input.email} placeholder="Email" />
+                    <input type="text" name="email" onChange={(e) => setName(e.target.value)} value={name} placeholder="Name" />
 
-                    <label id="icon" htmlFor="name"><i className="icon-user" /></label>
-                    <input type="text" name="name" onChange={handleChange} value={input.name} placeholder="Name" />
+                    <label id="icon" htmlFor="email"><i className="icon-envelope" /></label>
+                    <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+
 
                     <label id="icon" htmlFor="phone"><i className="icon-phone" /></label>
-                    <input type="text" name="phone" onChange={handleChange} value={input.phone} placeholder="Telephone Number" />
+                    <input type="text" name="phone" onChange={(e) => setPhone(e.target.value)} value={phone} placeholder="Telephone Number" />
 
                     <label id="icon" htmlFor="password"><i className="icon-shield"></i></label>
-                    <input type="password" name="password" onChange={handleChange} value={input.password} placeholder="Password" />
-
-                    <button className="button" type="button" onClick={() => submit()}>Register</button>
+                    <input type="password" name="password" onChange={(e) => setPassword(e.target.value)} value={password} placeholder="Password" />
                     <Link to='/login' >
                         <button className="button" type="button">Login</button>
                     </Link>
+
+                    <div className="md-3 d-flex justify-content-center">
+
+                        <button type="button" className="button"  onClick={() => onsubmit()}>Submit</button>
+                    </div>
                 </form>
+
                 <ToastContainer
                     position="top-right"
                     autoClose={2000}
@@ -118,8 +85,8 @@ const Register = () => {
                     theme="dark"
                 />
             </div>
-        </>
-    );
+        </center>
+    )
 }
 
-export default Register;
+export default Register

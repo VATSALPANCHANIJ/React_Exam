@@ -1,89 +1,84 @@
-import React, { useState } from "react";
-import { NavLink } from "react-browser-router";
-import { useNavigate } from "react-router-dom";
-import { Link, } from "react-router-dom"
-
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from "react-router-dom";
 
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
-    const submit = () => {
-        if (!email || !password) {
-            toast.error('Please enter both email and password', {
-                position: "top-right",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-                style: {
-                    width: '400px',
-                },
 
+    const navigate = useNavigate()
+    const [alldata, setAlldata] = useState([])
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
-            });
-            return;
-        }
-        let data = JSON.parse(localStorage.getItem('alldata'));
-        console.log(data);
+    const onsubmit = () => {
+        let val = JSON.parse(localStorage.getItem('register'));
+        let data = (val == null) ? [] : val;
         let ans = data.filter((val) => {
-            if (val.email == email && val.password == password) {
+            if (val.email == email) {
                 return val;
             }
-        })
+        });
         if (ans.length != 0) {
             if (ans[0].password == password) {
-                localStorage.setItem('alldata', JSON.stringify(ans[0]));
-                navigate('/home');
+                localStorage.setItem("login", JSON.stringify(ans[0]));
+                toast.success("Successfully Login");
+                navigate('/home')
             } else {
-                toast.error('Please enter password');
+                toast.error("Password is not valid");
             }
         } else {
-            toast.error('Please enter email');
+            toast.error("Email is not found");
         }
-        setEmail("");
-        setPassword("");
+    }
 
-    };
+    useEffect(() => {
+        let admin = JSON.parse(localStorage.getItem('login'));
+        if (admin) {
+            navigate('/home');
+        }
+    }, [])
+
 
     return (
         <>
+
             <div className="testbox">
                 <h1>Login</h1>
-                <form>
-                    <label id="icon" htmlFor="name"><i className="icon-envelope " /></label>
-                    <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} value={email} placeholder="Email" />
+                <div className="d-flex justify-content-center">
+                    <form className="">
 
-                    <label id="icon" htmlFor="name"><i className="icon-shield"></i></label>
-                    <input type="password" name="password" onChange={(e) => setPassword(e.target.value)} value={password} placeholder="Password" />
-                    <button className="button" type="button" onClick={() => submit()}>Login</button>
+                        <label id="icon" htmlFor="name"><i className="icon-envelope " /></label>
+                        <input type="text" name="password " onChange={(e) => setPassword(e.target.value)} value={password} placeholder="Email" />
 
-                    <Link to='/' >
-                        <button className="button" type="button">Register</button>
+                        <label id="icon" htmlFor="name"><i className="icon-shield"></i></label>
+                        <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} value={email} placeholder="Password" />
 
-                    </Link>
+                        <button type="button" className="button" onClick={() => onsubmit()}>Login</button>
+                        <Link to='/'>
+                            <button className="button" type="button">Register</button>
+                        </Link>
 
-                </form>
-                <ToastContainer
-                    position="top-right"
-                    autoClose={2000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="dark"
-                />
+
+
+
+                    </form>
+                </div>
             </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
         </>
-    );
-};
+    )
+}
 
-export default Login;
+export default Login
