@@ -48,11 +48,12 @@ const Login = () => {
                 <div className="d-flex justify-content-center">
                     <form className="">
 
-                        <label id="icon" htmlFor="name"><i className="icon-envelope " /></label>
-                        <input type="text" name="password " onChange={(e) => setPassword(e.target.value)} value={password} placeholder="Email" />
-
                         <label id="icon" htmlFor="name"><i className="icon-shield"></i></label>
-                        <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} value={email} placeholder="Password" />
+                        <input type="text" name="email" onChange={(e) => setEmail(e.target.value)} value={email} placeholder="Email" />
+
+                        <label id="icon" htmlFor="name"><i className="icon-envelope " /></label>
+                        <input type="text" name="password " onChange={(e) => setPassword(e.target.value)} value={password} placeholder="password" />
+
 
                         <button type="button" className="button" onClick={() => onsubmit()}>Login</button>
                         <Link to='/'>
